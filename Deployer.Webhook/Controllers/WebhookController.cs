@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Deployer.Webhook.Api.Controllers
+namespace Deployer.Webhook.Controllers
 {
     [ApiController]
     public class WebhookController : ControllerBase

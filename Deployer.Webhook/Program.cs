@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Deployer.Webhook.Api
+namespace Deployer.Webhook
 {
     public class Program
     {
