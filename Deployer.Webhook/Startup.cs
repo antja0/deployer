@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,16 @@ namespace Deployer.Webhook
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddMemoryCache();
+
+            // Rate limiting just in case - if it is not done at ingress level.
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimit"));
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+            services.AddHttpContextAccessor();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -26,6 +37,8 @@ namespace Deployer.Webhook
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseIpRateLimiting();
 
             app.UseHttpsRedirection();
 
