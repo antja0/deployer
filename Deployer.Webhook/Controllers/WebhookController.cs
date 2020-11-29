@@ -19,8 +19,9 @@ namespace Deployer.Webhook.Controllers
         /// Informs Deployer that new release is available for deployment.
         /// </summary>
         /// <param name="app">Name of the application that is released.</param>
+        [Consumes("application/json")]
         [HttpPost("api/release/{app}")]
-        public async Task<IActionResult> GithubWebhook(string app)
+        public async Task<IActionResult> ReleaseWebhook(string app)
         {
             return Ok();
         }
