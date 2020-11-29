@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
+using Deployer.Webhook.Models;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -12,7 +13,14 @@ namespace Deployer.Webhook.Tests.IntegrationTests
         public async Task PostToWebhook_Once_ReturnsOk()
         {
             // Arrange
-            var content = new { };
+            var content = new WebhookPayload
+            {
+                Repository = new Repository
+                {
+                    Name = "test-app",
+                    FullName = "organization/test-app"
+                }
+            };
 
             // Act
             var response = await TestClient.PostAsJsonAsync("api/release/test-app", content);
@@ -25,7 +33,14 @@ namespace Deployer.Webhook.Tests.IntegrationTests
         public async Task PostToWebhook_RapidlyTooManyTimes_RateLimitingShouldOccur()
         {
             // Arrange
-            var content = new { };
+            var content = new WebhookPayload
+            {
+                Repository = new Repository
+                {
+                    Name = "test-app",
+                    FullName = "organization/test-app"
+                }
+            };
 
             // Act
             for (int i = 0; i < 5; i++)
