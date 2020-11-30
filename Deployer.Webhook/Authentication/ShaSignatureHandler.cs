@@ -15,7 +15,8 @@ namespace Deployer.Webhook.Authentication
 {
     public class ShaSignatureHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        public const string Sha1Prefix = "sha1=";
+        public const string ShaSignatureHeader = "X-Hub-Signature-256";
+        public const string ShaPrefix = "sha256=";
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly WebhookOptions _options;
 
@@ -29,26 +30,26 @@ namespace Deployer.Webhook.Authentication
         {
             var httpContext = _httpContextAccessor.HttpContext;
 
-            httpContext.Request.Headers.TryGetValue("X-Hub-Signature", out var signatureWithPrefix);
+            httpContext.Request.Headers.TryGetValue(ShaSignatureHeader, out var signatureWithPrefix);
 
             if (string.IsNullOrWhiteSpace(signatureWithPrefix))
             {
-                return AuthenticateResult.Fail("X-Hub-Signature header not present or empty.");
+                return AuthenticateResult.Fail($"{ShaSignatureHeader} header not present or empty.");
             }
 
             // Verify SHA1 signature.
             var signature = (string)signatureWithPrefix;
-            if (signature.StartsWith(Sha1Prefix, StringComparison.OrdinalIgnoreCase))
+            if (signature.StartsWith(ShaPrefix, StringComparison.OrdinalIgnoreCase))
             {
-                signature = signature.Substring(Sha1Prefix.Length);
+                signature = signature.Substring(ShaPrefix.Length);
 
                 var body = httpContext.Request.BodyReader.AsStream();
                 using var reader = new StreamReader(body);
                 var bodyAsBytes = Encoding.ASCII.GetBytes(await reader.ReadToEndAsync());
                 httpContext.Request.Body = new MemoryStream(bodyAsBytes); // Without this body stream is already red in Controller and cannot be used.
 
-                using var sha1 = new HMACSHA1(Encoding.ASCII.GetBytes(_options.Secret));
-                var hash = sha1.ComputeHash(bodyAsBytes);
+                using var sha = new HMACSHA256(Encoding.ASCII.GetBytes(_options.Secret));
+                var hash = sha.ComputeHash(bodyAsBytes);
 
                 var hashString = ToHexString(hash);
                 if (hashString.Equals(signature))
@@ -60,7 +61,7 @@ namespace Deployer.Webhook.Authentication
                 }
             }
 
-            return AuthenticateResult.Fail("Invalid X-Hub-Signature.");
+            return AuthenticateResult.Fail($"Invalid {ShaSignatureHeader} header value.");
         }
 
         public static string ToHexString(IReadOnlyCollection<byte> bytes)

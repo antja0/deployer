@@ -53,11 +53,11 @@ namespace Deployer.Webhook.Tests.IntegrationTests
             var bodyData = JsonConvert.SerializeObject(body);
             var bodyAsBytes = Encoding.ASCII.GetBytes(bodyData);
 
-            using var sha1 = new HMACSHA1(Encoding.ASCII.GetBytes(TestSecret));
-            var hash = sha1.ComputeHash(bodyAsBytes);
+            using var sha = new HMACSHA256(Encoding.ASCII.GetBytes(TestSecret));
+            var hash = sha.ComputeHash(bodyAsBytes);
 
             var hashString = ShaSignatureHandler.ToHexString(hash);
-            TestClient.DefaultRequestHeaders.Add("X-Hub-Signature", new[] { ShaSignatureHandler.Sha1Prefix + hashString });
+            TestClient.DefaultRequestHeaders.Add(ShaSignatureHandler.ShaSignatureHeader, new[] { ShaSignatureHandler.ShaPrefix + hashString });
         }
     }
 }
