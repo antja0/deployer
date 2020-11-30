@@ -3,6 +3,7 @@ using Antja.Authentication.HMAC.Utilities;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,6 +35,8 @@ namespace Deployer.Api
 
             services.Configure<HMACSignatureOptions>(Configuration.GetSection("Webhook"));
             services.AddAuthentication(o => { o.DefaultScheme = "Webhook"; }).AddScheme<HMACSignatureHandler>("Webhook");
+
+            services.AddDbContext<DeployerContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Deployer")));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
