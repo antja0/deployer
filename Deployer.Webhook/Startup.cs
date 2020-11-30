@@ -1,6 +1,6 @@
+using Antja.Authentication.HMAC;
+using Antja.Authentication.HMAC.Utilities;
 using AspNetCoreRateLimit;
-using Deployer.Webhook.Authentication;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -32,8 +32,8 @@ namespace Deployer.Webhook
 
             services.AddHttpContextAccessor();
 
-            services.Configure<ShaSignatureOptions>(Configuration.GetSection("Webhook"));
-            services.AddAuthentication(o => { o.DefaultScheme = "Webhook"; }).AddScheme<ShaSignatureHandler>("Webhook");
+            services.Configure<HMACSignatureOptions>(Configuration.GetSection("Webhook"));
+            services.AddAuthentication(o => { o.DefaultScheme = "Webhook"; }).AddScheme<HMACSignatureHandler>("Webhook");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
-using Deployer.Webhook.Authentication;
+using Antja.Authentication.HMAC;
+using Antja.Authentication.HMAC.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +16,10 @@ namespace Deployer.Webhook.Tests.IntegrationTests
     public abstract class IntegrationTestBase
     {
         protected readonly HttpClient TestClient;
-        private const string TestSecret = "TestSecret";
+
+        private string _secret;
+        private string _header;
+        private HMACHashFunctions _hashFunction;
 
         protected IntegrationTestBase()
         {
@@ -27,10 +31,11 @@ namespace Deployer.Webhook.Tests.IntegrationTests
                     builder.UseUrls(hostUrl);
                     builder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>
                     {
-                        configurationBuilder.AddInMemoryCollection(new Dictionary<string, string>
-                        {
-                            { "Webhook:Secret", TestSecret },
-                        });
+                        var config = configurationBuilder.Build();
+
+                        _secret = config.GetValue("Webhook:Secret", "secret");
+                        _header = config.GetValue("Webhook:Header", "X-Hub-Signature-256");
+                        _hashFunction = config.GetValue("Webhook:HashFunction", HMACHashFunctions.SHA256);
                     });
                     builder.ConfigureServices(services =>
                     {
@@ -53,11 +58,9 @@ namespace Deployer.Webhook.Tests.IntegrationTests
             var bodyData = JsonConvert.SerializeObject(body);
             var bodyAsBytes = Encoding.ASCII.GetBytes(bodyData);
 
-            using var sha = new HMACSHA256(Encoding.ASCII.GetBytes(TestSecret));
-            var hash = sha.ComputeHash(bodyAsBytes);
-
-            var hashString = ShaSignatureHandler.ToHexString(hash);
-            TestClient.DefaultRequestHeaders.Add(ShaSignatureHandler.ShaSignatureHeader, new[] { ShaSignatureHandler.ShaPrefix + hashString });
+            var hash = HMACUtilities.ComputeHash(_hashFunction, _secret, bodyAsBytes);
+            var hashString = HMACUtilities.ToHexString(hash);
+            TestClient.DefaultRequestHeaders.Add(_header, new[] { HMACUtilities.GetSignaturePrefix(_hashFunction) + hashString });
         }
     }
 }
