@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.Webhook", "Deployer.Webhook\Deployer.Webhook.csproj", "{C83F153C-095D-4DE3-AB90-A173D9DE1827}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.Api", "Deployer.Api\Deployer.Api.csproj", "{C83F153C-095D-4DE3-AB90-A173D9DE1827}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deployer.Webhook.Tests", "Deployer.Webhook.Tests\Deployer.Webhook.Tests.csproj", "{8FF8675F-3141-4503-8992-347408804E4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deployer.Api.Tests", "Deployer.Api.Tests\Deployer.Api.Tests.csproj", "{8FF8675F-3141-4503-8992-347408804E4B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C83F153C-095D-4DE3-AB90-A173D9DE1827} = {C83F153C-095D-4DE3-AB90-A173D9DE1827}
 	EndProjectSection

@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Deployer.Webhook.Tests.IntegrationTests
+namespace Deployer.Api.Tests.IntegrationTests
 {
     public static class HttpExtensions
     {

@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Deployer.Webhook.Models;
+using Deployer.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Deployer.Webhook.Controllers
+namespace Deployer.Api.Controllers
 {
     [ApiController]
     public class WebhookController : ControllerBase

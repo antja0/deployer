@@ -1,4 +1,4 @@
-﻿namespace Deployer.Webhook.Models
+﻿namespace Deployer.Api.Models
 {
     public class WebhookPayload
     {

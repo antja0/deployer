@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Deployer.Webhook.Tests.IntegrationTests
+namespace Deployer.Api.Tests.IntegrationTests
 {
     public abstract class IntegrationTestBase
     {

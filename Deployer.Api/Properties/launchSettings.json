@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Deployer.Webhook.Api": {
+    "Deployer.Api": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "",

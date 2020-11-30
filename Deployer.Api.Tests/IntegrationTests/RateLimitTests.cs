@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using Deployer.Webhook.Models;
+using Deployer.Api.Models;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Deployer.Webhook.Tests.IntegrationTests
+namespace Deployer.Api.Tests.IntegrationTests
 {
     [TestFixture]
     public class RateLimitTests : IntegrationTestBase

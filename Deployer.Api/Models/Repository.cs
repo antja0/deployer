@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Deployer.Webhook.Models
+namespace Deployer.Api.Models
 {
     public class Repository
     {
