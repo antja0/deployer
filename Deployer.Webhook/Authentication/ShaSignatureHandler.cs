@@ -37,7 +37,7 @@ namespace Deployer.Webhook.Authentication
                 return AuthenticateResult.Fail($"{ShaSignatureHeader} header not present or empty.");
             }
 
-            // Verify SHA1 signature.
+            // Verify SHA signature.
             var signature = (string)signatureWithPrefix;
             if (signature.StartsWith(ShaPrefix, StringComparison.OrdinalIgnoreCase))
             {
