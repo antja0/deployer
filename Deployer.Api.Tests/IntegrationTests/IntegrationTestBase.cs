@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text;
 using Antja.Authentication.HMAC;
-using Antja.Authentication.HMAC.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Deployer.Api.Tests.IntegrationTests
@@ -16,6 +16,7 @@ namespace Deployer.Api.Tests.IntegrationTests
     public abstract class IntegrationTestBase
     {
         protected readonly HttpClient TestClient;
+        private readonly Dictionary<string, HMACSignatureOptions> _authOptions;
 
         private string _secret;
         private string _header;
@@ -51,16 +52,21 @@ namespace Deployer.Api.Tests.IntegrationTests
                 // Note: Must specify HTTPS here because default is HTTP.
                 BaseAddress = new Uri(hostUrl),
             });
+
+            _authOptions = appFactory.Services.GetService<IOptions<Dictionary<string, HMACSignatureOptions>>>().Value;
         }
 
-        protected void AddSignatureHeaders<TBody>(TBody body)
+        protected Tuple<string, string> GetSignatureHeader<TBody>(TBody body, string schema)
         {
             var bodyData = JsonConvert.SerializeObject(body);
             var bodyAsBytes = Encoding.ASCII.GetBytes(bodyData);
 
-            var hash = HMACUtilities.ComputeHash(_hashFunction, _secret, bodyAsBytes);
+            var options = _authOptions[schema];
+
+            var hash = HMACUtilities.ComputeHash(options.HashFunction, options.Secret, bodyAsBytes);
             var hashString = HMACUtilities.ToHexString(hash);
-            TestClient.DefaultRequestHeaders.Add(_header, new[] { HMACUtilities.GetSignaturePrefix(_hashFunction) + hashString });
+
+            return new Tuple<string, string>(options.Header, HMACUtilities.GetSignaturePrefix(options.HashFunction) + hashString);
         }
     }
 }

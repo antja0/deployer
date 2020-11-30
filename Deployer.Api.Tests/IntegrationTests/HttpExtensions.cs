@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -7,32 +8,23 @@ namespace Deployer.Api.Tests.IntegrationTests
 {
     public static class HttpExtensions
     {
-        public static Task<HttpResponseMessage> PostAsJsonAsync<T>(this HttpClient httpClient, string url, T data)
+        public static Task<HttpResponseMessage> PostAsJsonAsync<T>(this HttpClient httpClient, string url, T data, Tuple<string, string> header = null)
         {
-            return httpClient.PostAsync(url, ContentAsJson(data));
+            return httpClient.PostAsync(url, ContentAsJson(data, header));
         }
 
-        public static Task<HttpResponseMessage> PutAsJsonAsync<T>(this HttpClient httpClient, string url, T data)
-        {
-            return httpClient.PutAsync(url, ContentAsJson(data));
-        }
-
-        public static Task<HttpResponseMessage> PatchAsJsonAsync<T>(this HttpClient httpClient, string url, T data)
-        {
-            return httpClient.PatchAsync(url, ContentAsJson(data));
-        }
-
-        public static StringContent ContentAsJson<T>(T data)
+        public static StringContent ContentAsJson<T>(T data, Tuple<string, string> header)
         {
             var dataAsString = JsonConvert.SerializeObject(data);
             var content = new StringContent(dataAsString);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            return content;
-        }
 
-        public static async Task<T> ReadAsAsync<T>(this HttpContent content)
-        {
-            return JsonConvert.DeserializeObject<T>(await content.ReadAsStringAsync());
+            if (header != null)
+            {
+                content.Headers.Add(header.Item1, header.Item2);
+            }
+
+            return content;
         }
     }
 }

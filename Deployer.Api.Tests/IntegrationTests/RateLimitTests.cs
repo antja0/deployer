@@ -13,7 +13,7 @@ namespace Deployer.Api.Tests.IntegrationTests
         public async Task PostToWebhook_Once_ReturnsOk()
         {
             // Arrange
-            var content = new WebhookPayload
+            var request = new WebhookPayload
             {
                 Repository = new Repository
                 {
@@ -22,10 +22,10 @@ namespace Deployer.Api.Tests.IntegrationTests
                 }
             };
 
-            AddSignatureHeaders(content);
+            var header = GetSignatureHeader(request, "Webhook");
 
             // Act
-            var response = await TestClient.PostAsJsonAsync("api/release/test-app", content);
+            var response = await TestClient.PostAsJsonAsync("api/release/test-app", request, header);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -35,7 +35,7 @@ namespace Deployer.Api.Tests.IntegrationTests
         public async Task PostToWebhook_RapidlyTooManyTimes_RateLimitingShouldOccur()
         {
             // Arrange
-            var content = new WebhookPayload
+            var request = new WebhookPayload
             {
                 Repository = new Repository
                 {
@@ -44,15 +44,15 @@ namespace Deployer.Api.Tests.IntegrationTests
                 }
             };
 
-            AddSignatureHeaders(content);
+            var header = GetSignatureHeader(request, "Webhook");
 
             // Act
             for (int i = 0; i < 5; i++)
             {
-                await TestClient.PostAsJsonAsync("api/release/test-app", content);
+                await TestClient.PostAsJsonAsync("api/release/test-app", request);
             }
 
-            var response = await TestClient.PostAsJsonAsync("api/release/test-app", content);
+            var response = await TestClient.PostAsJsonAsync("api/release/test-app", request, header);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
