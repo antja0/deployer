@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -20,6 +21,7 @@ namespace Deployer.Api.Nodes
         /// Register a new node to deployer.
         /// </summary>
         /// <param name="node">Name of the node that is registered.</param>
+        [Authorize(AuthenticationSchemes = "Nodes")]
         [HttpPost("api/Nodes/{node}")]
         public async Task<IActionResult> RegisterNode(string node)
         {
