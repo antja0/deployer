@@ -1,6 +1,6 @@
 ﻿namespace Deployer.Webhook.Authentication
 {
-    public class WebhookOptions
+    public class ShaSignatureOptions
     {
         public string Secret { get; set; }
     }

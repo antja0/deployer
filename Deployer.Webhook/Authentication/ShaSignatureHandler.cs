@@ -18,9 +18,9 @@ namespace Deployer.Webhook.Authentication
         public const string ShaSignatureHeader = "X-Hub-Signature-256";
         public const string ShaPrefix = "sha256=";
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly WebhookOptions _options;
+        private readonly ShaSignatureOptions _options;
 
-        public ShaSignatureHandler(IHttpContextAccessor httpContextAccessor, IOptions<WebhookOptions> options, IOptionsMonitor<AuthenticationSchemeOptions> authOptions, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(authOptions, logger, encoder, clock)
+        public ShaSignatureHandler(IHttpContextAccessor httpContextAccessor, IOptions<ShaSignatureOptions> options, IOptionsMonitor<AuthenticationSchemeOptions> authOptions, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(authOptions, logger, encoder, clock)
         {
             _httpContextAccessor = httpContextAccessor;
             _options = options.Value;

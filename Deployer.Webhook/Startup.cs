@@ -32,7 +32,7 @@ namespace Deployer.Webhook
 
             services.AddHttpContextAccessor();
 
-            services.Configure<WebhookOptions>(Configuration.GetSection("Webhook"));
+            services.Configure<ShaSignatureOptions>(Configuration.GetSection("Webhook"));
             services.AddAuthentication(o => { o.DefaultScheme = "Webhook"; }).AddScheme<AuthenticationSchemeOptions, ShaSignatureHandler>("Webhook", o => { });
         }
 
