@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Deployer.Webhook.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -20,7 +21,7 @@ namespace Deployer.Webhook.Controllers
         /// Informs Deployer that new release is available for deployment.
         /// </summary>
         /// <param name="app">Name of the application that is released.</param>
-        [Consumes("application/json")]
+        [Authorize(AuthenticationSchemes = "Webhook")]
         [HttpPost("api/release/{app}")]
         public async Task<IActionResult> ReleaseWebhook(string app, [FromBody] WebhookPayload payload)
         {

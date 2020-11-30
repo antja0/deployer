@@ -1,4 +1,6 @@
 using AspNetCoreRateLimit;
+using Deployer.Webhook.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +31,9 @@ namespace Deployer.Webhook
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
             services.AddHttpContextAccessor();
+
+            services.Configure<WebhookOptions>(Configuration.GetSection("Webhook"));
+            services.AddAuthentication(o => { o.DefaultScheme = "Webhook"; }).AddScheme<AuthenticationSchemeOptions, ShaSignatureHandler>("Webhook", o => { });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
