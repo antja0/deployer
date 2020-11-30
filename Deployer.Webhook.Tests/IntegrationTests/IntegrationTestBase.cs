@@ -1,14 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
+using Deployer.Webhook.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Deployer.Webhook.Tests.IntegrationTests
 {
     public abstract class IntegrationTestBase
     {
         protected readonly HttpClient TestClient;
+        private const string TestSecret = "TestSecret";
 
         protected IntegrationTestBase()
         {
@@ -20,6 +27,10 @@ namespace Deployer.Webhook.Tests.IntegrationTests
                     builder.UseUrls(hostUrl);
                     builder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>
                     {
+                        configurationBuilder.AddInMemoryCollection(new Dictionary<string, string>
+                        {
+                            { "Webhook:Secret", TestSecret },
+                        });
                     });
                     builder.ConfigureServices(services =>
                     {
@@ -35,6 +46,18 @@ namespace Deployer.Webhook.Tests.IntegrationTests
                 // Note: Must specify HTTPS here because default is HTTP.
                 BaseAddress = new Uri(hostUrl),
             });
+        }
+
+        protected void AddSignatureHeaders<TBody>(TBody body)
+        {
+            var bodyData = JsonConvert.SerializeObject(body);
+            var bodyAsBytes = Encoding.ASCII.GetBytes(bodyData);
+
+            using var sha1 = new HMACSHA1(Encoding.ASCII.GetBytes(TestSecret));
+            var hash = sha1.ComputeHash(bodyAsBytes);
+
+            var hashString = ShaSignatureHandler.ToHexString(hash);
+            TestClient.DefaultRequestHeaders.Add("X-Hub-Signature", new[] { ShaSignatureHandler.Sha1Prefix + hashString });
         }
     }
 }

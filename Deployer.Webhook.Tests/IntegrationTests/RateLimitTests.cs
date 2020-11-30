@@ -22,6 +22,8 @@ namespace Deployer.Webhook.Tests.IntegrationTests
                 }
             };
 
+            AddSignatureHeaders(content);
+
             // Act
             var response = await TestClient.PostAsJsonAsync("api/release/test-app", content);
 
@@ -41,6 +43,8 @@ namespace Deployer.Webhook.Tests.IntegrationTests
                     FullName = "organization/test-app"
                 }
             };
+
+            AddSignatureHeaders(content);
 
             // Act
             for (int i = 0; i < 5; i++)

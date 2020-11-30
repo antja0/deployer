@@ -15,7 +15,7 @@ namespace Deployer.Webhook.Authentication
 {
     public class ShaSignatureHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        private const string Sha1Prefix = "sha1=";
+        public const string Sha1Prefix = "sha1=";
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly WebhookOptions _options;
 
@@ -63,7 +63,7 @@ namespace Deployer.Webhook.Authentication
             return AuthenticateResult.Fail("Invalid X-Hub-Signature.");
         }
 
-        private static string ToHexString(IReadOnlyCollection<byte> bytes)
+        public static string ToHexString(IReadOnlyCollection<byte> bytes)
         {
             var builder = new StringBuilder(bytes.Count * 2);
 
