@@ -25,7 +25,8 @@ namespace Deployer.Api.Nodes
         {
             await _context.Nodes.AddAsync(new Node
             {
-                Name = "",
+                Id = System.Guid.NewGuid().ToString(),
+                Name = node,
                 ApiEndpoint = "",
                 Description = "",
                 Registered = false
