@@ -33,7 +33,7 @@ namespace Deployer.Webhook
             services.AddHttpContextAccessor();
 
             services.Configure<ShaSignatureOptions>(Configuration.GetSection("Webhook"));
-            services.AddAuthentication(o => { o.DefaultScheme = "Webhook"; }).AddScheme<AuthenticationSchemeOptions, ShaSignatureHandler>("Webhook", o => { });
+            services.AddAuthentication(o => { o.DefaultScheme = "Webhook"; }).AddScheme<ShaSignatureHandler>("Webhook");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
