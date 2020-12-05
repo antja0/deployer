@@ -23,11 +23,25 @@ If not yet present, those folders will be created.
 
 ## Security
 
-Communication between deployer and nodes (as well as webhook requests) are secured with [HMAC](https://en.wikipedia.org/wiki/HMAC).
-However I'd recommend you to host deployer and nodes in the same network so that these endpoints are not open to the internet or something, because I don't really trust my skills with this :smile:
+All communication between Deployer components is secured with HTTPS and [HMAC](https://en.wikipedia.org/wiki/HMAC).
+
+Preferrably Deployer networking should be setup so that:
+- Deployer.API receives requests from anywhere (eg. Github or node registrations).
+- Deployer.Node:s allowing connections only from Deployer.UI.
+- Deployer.UI in intranet, allowing no outside connections.
+
 **I do not take any responsibility, please do your own research before using.**
 
 ## Development
+
+Tools:
+- Visual Studio
+- ReSharper
+- Docker (optional, can also just run from vs)
+- Database server eg. SQL Server
+
+Configure (appsettings.Development.json) Deployer.UI and Deployer.API to use same database.
+Configure database to allow TCP/IP connections to port 1337 (default).
 
 After updating models, run [ef migrations](https://docs.microsoft.com/en-us/ef/core/get-started/overview/first-app?tabs=netcore-cli) with powershell from repository root:
 ```ps
