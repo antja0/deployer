@@ -1,4 +1,4 @@
-﻿namespace Deployer.Models
+﻿namespace Deployer.Data.Models
 {
     public class Node
     {

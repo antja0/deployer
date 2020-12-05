@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Deployer.Api.Data;
-using Deployer.Models;
+using Deployer.Data;
+using Deployer.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
