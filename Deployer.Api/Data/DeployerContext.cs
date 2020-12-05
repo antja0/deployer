@@ -1,7 +1,7 @@
-﻿using Deployer.Api.Nodes;
+﻿using Deployer.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Deployer.Api
+namespace Deployer.Api.Data
 {
     public class DeployerContext : DbContext
     {

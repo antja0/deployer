@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using Deployer.Api.Models;
+using Deployer.Api.Webhook.Models;
 using FluentAssertions;
 using NUnit.Framework;
 

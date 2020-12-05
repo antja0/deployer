@@ -1,5 +1,6 @@
 using Antja.Authentication.HMAC;
 using AspNetCoreRateLimit;
+using Deployer.Api.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
