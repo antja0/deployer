@@ -10,7 +10,7 @@ namespace Deployer.Data
         {
             // ReSharper disable once CommentTypo
             // TODO: Add support for postgre etc. if needed.
-            return services.AddDbContext<TDbContext>(options => options.UseSqlServer(connectionString));
+            return services.AddDbContext<TDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Deployer.Data")));
         }
     }
 }

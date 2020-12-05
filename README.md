@@ -26,3 +26,10 @@ If not yet present, those folders will be created.
 Communication between deployer and nodes (as well as webhook requests) are secured with [HMAC](https://en.wikipedia.org/wiki/HMAC).
 However I'd recommend you to host deployer and nodes in the same network so that these endpoints are not open to the internet or something, because I don't really trust my skills with this :smile:
 **I do not take any responsibility, please do your own research before using.**
+
+## Development
+
+After updating models, run [ef migrations](https://docs.microsoft.com/en-us/ef/core/get-started/overview/first-app?tabs=netcore-cli) with powershell from repository root:
+```ps
+dotnet ef migrations add InitialCreate --project Deployer.Data
+```
