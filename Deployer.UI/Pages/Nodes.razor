@@ -1,0 +1,55 @@
+﻿@page "/nodes"
+
+@using Deployer.Data
+@using Deployer.Data.Models
+@using Microsoft.EntityFrameworkCore
+@inject DeployerContext Context
+
+<h1>Nodes</h1>
+
+<div class="d-flex flex-row">
+    <input class="p-2" type="text" placeholder="Filter..." @bind="Filter">
+    <button class="p-2 btn btn-primary" @onclick="UpdateHeading"><span class="oi oi-magnifying-glass" aria-hidden="true"></span></button>
+</div>
+
+@if (nodes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var node in nodes)
+            {
+            <tr>
+                <td>@node.Name</td>
+                <td>@node.Description</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    public string Filter { get; set; }
+
+    private List<Node> nodes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        nodes = await Context.Nodes.ToListAsync();
+    }
+
+    private async Task UpdateHeading(MouseEventArgs e)
+    {
+        nodes = null;
+        nodes = await Context.Nodes.Where(i => i.Name.Contains(Filter) || i.Description.Contains(Filter)).ToListAsync();
+    }
+}

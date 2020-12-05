@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Deployer.Data;
 using Deployer.Data.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -22,23 +23,20 @@ namespace Deployer.Api.Nodes
         /// <summary>
         /// Register a new node to deployer.
         /// </summary>
-        /// <param name="node">Name of the node that is registered.</param>
         [Authorize(AuthenticationSchemes = "Nodes")]
-        [HttpPost("api/Nodes/{node}")]
-        public async Task<IActionResult> RegisterNode(string node)
+        [HttpPost("/api/Nodes")]
+        public async Task<IActionResult> Register([FromBody] Node node)
         {
-            await _context.Nodes.AddAsync(new Node
-            {
-                Id = System.Guid.NewGuid().ToString(),
-                Name = node,
-                ApiEndpoint = "",
-                Description = "",
-                Registered = false
-            });
+            _logger.LogInformation("Registering new node...");
 
+            node.Id = Guid.NewGuid().ToString();
+
+            await _context.Nodes.AddAsync(node);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            _logger.LogInformation($"Node '{node.Name}' registration done.");
+
+            return Ok(node);
         }
     }
 }

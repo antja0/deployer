@@ -22,7 +22,7 @@ namespace Deployer.Api.Webhook
         /// </summary>
         /// <param name="app">Name of the application that is released.</param>
         [Authorize(AuthenticationSchemes = "Webhook")]
-        [HttpPost("api/release/{app}")]
+        [HttpPost("/api/release/{app}")]
         public async Task<IActionResult> ReleaseWebhook(string app, [FromBody] WebhookPayload payload)
         {
             if (payload.Repository == null)
