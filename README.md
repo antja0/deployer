@@ -47,3 +47,17 @@ After updating models, run [ef migrations](https://docs.microsoft.com/en-us/ef/c
 ```ps
 dotnet ef migrations add InitialCreate --project Deployer.Data
 ```
+
+## Usage
+
+Webhook (in Deployer.Api) listens to POST events in this route:
+
+`/api/{eventId}`
+
+If using Github you can call these webhooks:
+
+- `/api/push` push event
+- `/api/release` release event
+- `/api/pull-request` pull request event 
+
+Deployer fetched calling application information from webhook [payload](https://docs.github.com/en/free-pro-team@latest/developers/webhooks-and-events/webhook-events-and-payloads).
