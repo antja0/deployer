@@ -27,14 +27,13 @@ namespace Deployer.Api.Webhook
         /// Webhook (mainly) for Github.
         /// Informs Deployer that new event occurred, eg. new release or branch is available for deployment.
         /// </summary>
-        /// <param name="applicationId">Name/ID of triggering application.</param>
-        /// <param name="eventId"></param>
+        /// <param name="eventId">ID/Name of event that triggers. eg. 'pull-request' or 'push'</param>
         /// <param name="payload">Contains various information about sending repository.</param>
         [Authorize(AuthenticationSchemes = "Webhook")]
-        [HttpPost("/api/{applicationId}/{eventId}")]
-        public async Task<IActionResult> ReleaseWebhook(string applicationId, string eventId, [FromBody] WebhookPayload payload)
+        [HttpPost("/api/{eventId}")]
+        public async Task<IActionResult> ReleaseWebhook(string eventId, [FromBody] WebhookPayload payload)
         {
-            if (string.IsNullOrWhiteSpace(applicationId) || string.IsNullOrWhiteSpace(eventId)) return BadRequest("Invalid applicationId or eventId.");
+            if (string.IsNullOrWhiteSpace(eventId)) return BadRequest("Invalid applicationId or eventId.");
             if (payload.Repository == null) return BadRequest($"Malicious payload - '{nameof(WebhookPayload.Repository)}' not included");
 
             var eventType = GetDeploymentType(eventId);
@@ -42,6 +41,8 @@ namespace Deployer.Api.Webhook
             {
                 return BadRequest($"Event type '{eventId}' not defined");
             }
+
+            var applicationId = payload.Repository.FullName;
 
             _logger.LogDebug($"Webhook received event '{eventType}' from '{applicationId}'...");
 
