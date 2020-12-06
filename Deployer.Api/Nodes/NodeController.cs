@@ -30,6 +30,8 @@ namespace Deployer.Api.Nodes
             _logger.LogInformation("Registering new node...");
 
             node.Id = Guid.NewGuid().ToString();
+            node.Registered = false;
+            node.Deleted = false;
 
             await _context.Nodes.AddAsync(node);
             await _context.SaveChangesAsync();

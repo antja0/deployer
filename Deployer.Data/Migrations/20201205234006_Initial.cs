@@ -2,7 +2,7 @@
 
 namespace Deployer.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,11 +10,12 @@ namespace Deployer.Data.Migrations
                 name: "Nodes",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ApiEndpoint = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Registered = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<string>(type: "CHAR(36)", maxLength: 36, nullable: false),
+                    Name = table.Column<string>(type: "NVARCHAR(128)", maxLength: 128, nullable: true),
+                    ApiEndpoint = table.Column<string>(type: "NVARCHAR(256)", maxLength: 256, nullable: true),
+                    Description = table.Column<string>(type: "NVARCHAR(1024)", maxLength: 1024, nullable: true),
+                    Registered = table.Column<bool>(type: "bit", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

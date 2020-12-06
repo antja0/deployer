@@ -10,5 +10,10 @@ namespace Deployer.Data
         public DeployerContext(DbContextOptions options) : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Node>().HasQueryFilter(i => i.Registered && !i.Deleted);
+        }
     }
 }

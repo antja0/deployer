@@ -21,7 +21,8 @@ namespace Deployer.Data.Models
         [StringLength(1024)]
         public string Description { get; set; }
 
-
         public bool Registered { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

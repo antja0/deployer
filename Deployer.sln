@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.Api.Tests", "Deplo
 		{C83F153C-095D-4DE3-AB90-A173D9DE1827} = {C83F153C-095D-4DE3-AB90-A173D9DE1827}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deployer.UI", "Deployer.UI\Deployer.UI.csproj", "{9A1797EB-3546-4ABB-849C-A0313014E85A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.UI", "Deployer.UI\Deployer.UI.csproj", "{9A1797EB-3546-4ABB-849C-A0313014E85A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deployer.Data", "Deployer.Data\Deployer.Data.csproj", "{945E4E5D-F85A-408F-8E52-2E9BA50ADD1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.Data", "Deployer.Data\Deployer.Data.csproj", "{945E4E5D-F85A-408F-8E52-2E9BA50ADD1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

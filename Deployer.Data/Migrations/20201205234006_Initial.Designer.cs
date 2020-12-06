@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Deployer.Data.Migrations
 {
     [DbContext(typeof(DeployerContext))]
-    [Migration("20201205170741_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20201205234006_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,16 +23,23 @@ namespace Deployer.Data.Migrations
             modelBuilder.Entity("Deployer.Data.Models.Node", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(36)
+                        .HasColumnType("CHAR(36)");
 
                     b.Property<string>("ApiEndpoint")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("NVARCHAR(256)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("NVARCHAR(1024)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("NVARCHAR(128)");
 
                     b.Property<bool>("Registered")
                         .HasColumnType("bit");

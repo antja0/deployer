@@ -21,16 +21,23 @@ namespace Deployer.Data.Migrations
             modelBuilder.Entity("Deployer.Data.Models.Node", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(36)
+                        .HasColumnType("CHAR(36)");
 
                     b.Property<string>("ApiEndpoint")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("NVARCHAR(256)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("NVARCHAR(1024)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("NVARCHAR(128)");
 
                     b.Property<bool>("Registered")
                         .HasColumnType("bit");

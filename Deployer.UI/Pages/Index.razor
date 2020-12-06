@@ -1,11 +1,72 @@
 ﻿@page "/"
+@using Deployer.Data
+@using Deployer.Data.Models
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.EntityFrameworkCore.Diagnostics
+@inject DeployerContext Context
 
-<h1>Deployer</h1>
+<h2>Release progress</h2>
+<div class="progress">
+    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
 
-Recent releases
+<hr />
+
+@if (nodes == null)
+{
+    <LoadingSpinner />
+}
+else
+{
+    if (nodes.Count > 0)
+    {
+        <h2>Unregistered nodes</h2>
+        @foreach (var node in nodes)
+        {
+            <div class="d-flex flex-row alert alert-warning" role="alert">
+                <button class="p-2 mr-2 btn btn-success" @onclick="@(e => RegisterNode(node.Id))"><span class="oi oi-check" aria-hidden="true"></span></button>
+                <button class="p-2 mr-3 btn btn-danger" @onclick="@(e => DeleteNode(node.Id))"><span class="oi oi-x" aria-hidden="true"></span></button>
+                <span class="p-2">@node.Name</span>
+            </div>
+        }
+    }
+}
+
 
 <!--
 Some cool charts go here eg. error per version
 
 What is most current version etc.
 -->
+
+@code {
+    private List<Node> nodes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateNodes();
+    }
+
+    private async Task UpdateNodes()
+    {
+        nodes = await Context.Nodes.IgnoreQueryFilters().Where(i => !i.Registered && !i.Deleted).ToListAsync();
+    }
+
+    protected async Task RegisterNode(string id)
+    {
+        nodes = null;
+        var node = await Context.Nodes.FindAsync(id);
+        node.Registered = true;
+        await Context.SaveChangesAsync();
+        await UpdateNodes();
+    }
+
+    protected async Task DeleteNode(string id)
+    {
+        nodes = null;
+        var node = await Context.Nodes.FindAsync(id);
+        node.Deleted = true;
+        await Context.SaveChangesAsync();
+        await UpdateNodes();
+    }
+}
