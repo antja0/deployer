@@ -1,11 +1,11 @@
-﻿@page "/nodes"
+﻿@page "/projects"
 
 @using Deployer.Data
 @using Deployer.Data.Models
 @using Microsoft.EntityFrameworkCore
 @inject DeployerContext Context
 
-<h1>Nodes</h1>
+<h1>Projects</h1>
 
 <div class="d-flex flex-row">
     <input class="p-2" type="text" placeholder="Filter..." @bind="Filter">
@@ -17,21 +17,22 @@
     <thead>
     <tr>
         <th>Name</th>
-        <th>Description</th>
+        <th>Node</th>
     </tr>
     </thead>
+
     <tbody>
-    @if (nodes == null)
+    @if (projects == null)
     {
         <LoadingSpinner />
     }
     else
     {
-        @foreach (var node in nodes)
+        @foreach (var project in projects)
         {
             <tr>
-                <td>@node.Name</td>
-                <td>@node.Description</td>
+                <td>@project.Name</td>
+                <td><a href="nodes/@project.Node.Id">@project.Node.Name</a></td>
             </tr>
         }
     }
@@ -42,16 +43,23 @@
 @code {
     public string Filter { get; set; }
 
-    private List<Node> nodes;
+    private List<Project> projects;
 
     protected override async Task OnInitializedAsync()
     {
-        nodes = await Context.Nodes.ToListAsync();
+        projects = await Context.Projects
+            .Include(i => i.Node)
+            .OrderBy(i => i.Name)
+            .ToListAsync();
     }
 
     private async Task Search(MouseEventArgs e)
     {
-        nodes = null;
-        nodes = await Context.Nodes.Where(i => i.Name.Contains(Filter) || i.Description.Contains(Filter)).ToListAsync();
+        projects = null;
+        projects = await Context.Projects
+            .Include(i => i.Node)
+            .Where(i => i.Name.Contains(Filter))
+            .OrderBy(i => i.Name)
+            .ToListAsync();
     }
 }
