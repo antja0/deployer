@@ -21,13 +21,13 @@ namespace Deployer.Api.Nodes
         }
 
         /// <summary>
-        /// Register a new node to deployer.
+        /// Adds new node to deployer.
         /// </summary>
         [Authorize(AuthenticationSchemes = "Nodes")]
         [HttpPost("/api/Nodes")]
-        public async Task<IActionResult> Register([FromBody] Node node)
+        public async Task<IActionResult> Add([FromBody] Node node)
         {
-            _logger.LogInformation("Registering new node...");
+            _logger.LogInformation($"Adding new (unregistered) node '{node.Name}'...");
 
             node.Id = Guid.NewGuid().ToString();
             node.Registered = false;
@@ -36,7 +36,7 @@ namespace Deployer.Api.Nodes
             await _context.Nodes.AddAsync(node);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"Node '{node.Name}' registration done.");
+            _logger.LogInformation($"Node '{node.Name}' added.");
 
             return Ok(node);
         }
