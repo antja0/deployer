@@ -6,6 +6,9 @@ namespace Deployer.Data
     public class DeployerContext : DbContext
     {
         public DbSet<Node> Nodes { get; set; }
+        public DbSet<Application> Applications { get; set; }
+        public DbSet<ApplicationVersion> ApplicationVersions { get; set; }
+        public DbSet<Project> Projects { get; set; }
 
         public DeployerContext(DbContextOptions options) : base(options)
         {
@@ -14,6 +17,8 @@ namespace Deployer.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Node>().HasQueryFilter(i => i.Registered && !i.Deleted);
+
+            builder.Entity<ApplicationVersion>().HasKey(i => new {i.Version, i.ApplicationId});
         }
     }
 }

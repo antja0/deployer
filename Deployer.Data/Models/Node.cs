@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Deployer.Data.Models
@@ -24,5 +25,7 @@ namespace Deployer.Data.Models
         public bool Registered { get; set; }
 
         public bool Deleted { get; set; }
+
+        public List<Project> Projects { get; set; }
     }
 }
