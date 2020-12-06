@@ -17,6 +17,7 @@ namespace Deployer.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Node>().HasQueryFilter(i => i.Registered && !i.Deleted);
+            builder.Entity<Application>().HasQueryFilter(i => !i.Deleted);
 
             builder.Entity<ApplicationVersion>().HasKey(i => new {i.Version, i.ApplicationId});
         }
