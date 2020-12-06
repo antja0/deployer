@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Deployer.Api.Webhook.Models;
 using Deployer.Data;
 using Deployer.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deployer.Api.Webhook
 {
@@ -24,22 +25,27 @@ namespace Deployer.Api.Webhook
 
         /// <summary>
         /// Webhook (mainly) for Github.
-        /// Informs Deployer that new release is available for deployment.
+        /// Informs Deployer that new event occurred, eg. new release or branch is available for deployment.
         /// </summary>
-        /// <param name="applicationId">Name/ID of the application that is being released.</param>
+        /// <param name="applicationId">Name/ID of triggering application.</param>
+        /// <param name="eventId"></param>
         /// <param name="payload">Contains various information about sending repository.</param>
         [Authorize(AuthenticationSchemes = "Webhook")]
-        [HttpPost("/api/release/{applicationId}")]
-        public async Task<IActionResult> ReleaseWebhook(string applicationId, [FromBody] WebhookPayload payload)
+        [HttpPost("/api/{applicationId}/{eventId}")]
+        public async Task<IActionResult> ReleaseWebhook(string applicationId, string eventId, [FromBody] WebhookPayload payload)
         {
-            if (string.IsNullOrWhiteSpace(applicationId) || payload.Repository == null)
+            if (string.IsNullOrWhiteSpace(applicationId) || string.IsNullOrWhiteSpace(eventId)) return BadRequest("Invalid applicationId or eventId.");
+            if (payload.Repository == null) return BadRequest($"Malicious payload - '{nameof(WebhookPayload.Repository)}' not included");
+
+            var eventType = GetDeploymentType(eventId);
+            if (eventType == DeploymentType.Undefined)
             {
-                return BadRequest($"Malicious payload - application not defined or '{nameof(WebhookPayload.Repository)}' not included");
+                return BadRequest($"Event type '{eventId}' not defined");
             }
 
-            _logger.LogDebug($"Webhook received release request from '{applicationId}'...");
+            _logger.LogDebug($"Webhook received event '{eventType}' from '{applicationId}'...");
 
-            var application = await _context.Applications.FindAsync(applicationId);
+            var application = await _context.Applications.Include(i => i.DeploymentRules).FirstOrDefaultAsync(i => i.Id.Equals(applicationId));
             if (application == null)
             {
                 _logger.LogInformation($"Adding new application '{applicationId}'...");
@@ -65,9 +71,32 @@ namespace Deployer.Api.Webhook
 
             // Create new release logic
 
+            var deploymentRule = application.DeploymentRules?.FirstOrDefault(i => i.DeployAutomatically && i.Type == eventType);
+            if (deploymentRule != null)
+            {
+                _logger.LogInformation($"Starting to deploy application '{applicationId}'...");
+                // TODO deploy automatically
+            }
+
             await _context.SaveChangesAsync();
 
             return Ok(application);
+        }
+
+        private static DeploymentType GetDeploymentType(string eventId)
+        {
+            switch (eventId)
+            {
+                case "push":
+                    return DeploymentType.Push;
+                case "pullrequest":
+                case "pull-request":
+                    return DeploymentType.PullRequest;
+                case "release":
+                    return DeploymentType.Release;
+                default:
+                    return DeploymentType.Undefined;
+            }
         }
     }
 }

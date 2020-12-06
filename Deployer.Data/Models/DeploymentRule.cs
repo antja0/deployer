@@ -5,7 +5,7 @@ namespace Deployer.Data.Models
 {
     public class DeploymentRule
     {
-        public DeploymentType Type { get; set; } = DeploymentType.Branch;
+        public DeploymentType Type { get; set; } = DeploymentType.PullRequest;
 
         [Column(TypeName = "CHAR")]
         [StringLength(36)]

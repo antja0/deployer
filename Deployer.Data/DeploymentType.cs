@@ -3,7 +3,8 @@
     public enum DeploymentType
     {
         Push = 1,
-        Branch = 2,
-        Release = 3
+        PullRequest = 2,
+        Release = 3,
+        Undefined = 404,
     }
 }
