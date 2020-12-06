@@ -181,3 +181,21 @@ app {
         display: block;
     }
 }
+
+.loading {
+    animation: 1s ease-out 0s 1 fadeIn;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
