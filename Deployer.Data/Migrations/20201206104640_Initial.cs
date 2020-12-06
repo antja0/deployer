@@ -3,16 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Deployer.Data.Migrations
 {
-    public partial class AddApplicationsAndProjects : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "ApplicationId",
-                table: "Nodes",
-                type: "CHAR(36)",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Applications",
                 columns: table => new
@@ -24,31 +18,11 @@ namespace Deployer.Data.Migrations
                     ChangelogPath = table.Column<string>(type: "NVARCHAR(256)", maxLength: 256, nullable: true),
                     ScriptPath = table.Column<string>(type: "NVARCHAR(128)", maxLength: 128, nullable: true),
                     Description = table.Column<string>(type: "NVARCHAR(1024)", maxLength: 1024, nullable: true),
-                    Registered = table.Column<bool>(type: "bit", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Applications", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "CHAR(36)", maxLength: 36, nullable: false),
-                    Name = table.Column<string>(type: "NVARCHAR(512)", maxLength: 512, nullable: true),
-                    NodeId = table.Column<string>(type: "CHAR(36)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Projects_Nodes_NodeId",
-                        column: x => x.NodeId,
-                        principalTable: "Nodes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,6 +43,48 @@ namespace Deployer.Data.Migrations
                         principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Nodes",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "CHAR(36)", maxLength: 36, nullable: false),
+                    Name = table.Column<string>(type: "NVARCHAR(128)", maxLength: 128, nullable: true),
+                    ApiEndpoint = table.Column<string>(type: "NVARCHAR(256)", maxLength: 256, nullable: true),
+                    Description = table.Column<string>(type: "NVARCHAR(1024)", maxLength: 1024, nullable: true),
+                    Registered = table.Column<bool>(type: "bit", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false),
+                    ApplicationId = table.Column<string>(type: "CHAR(36)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Nodes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Nodes_Applications_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "Applications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Projects",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "CHAR(36)", maxLength: 36, nullable: false),
+                    Name = table.Column<string>(type: "NVARCHAR(512)", maxLength: 512, nullable: true),
+                    NodeId = table.Column<string>(type: "CHAR(36)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Projects", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Projects_Nodes_NodeId",
+                        column: x => x.NodeId,
+                        principalTable: "Nodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,11 +113,6 @@ namespace Deployer.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Nodes_ApplicationId",
-                table: "Nodes",
-                column: "ApplicationId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ApplicationVersionProject_ApplicationVersionsVersion_ApplicationVersionsApplicationId",
                 table: "ApplicationVersionProject",
                 columns: new[] { "ApplicationVersionsVersion", "ApplicationVersionsApplicationId" });
@@ -112,25 +123,18 @@ namespace Deployer.Data.Migrations
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Nodes_ApplicationId",
+                table: "Nodes",
+                column: "ApplicationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Projects_NodeId",
                 table: "Projects",
                 column: "NodeId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Nodes_Applications_ApplicationId",
-                table: "Nodes",
-                column: "ApplicationId",
-                principalTable: "Applications",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Nodes_Applications_ApplicationId",
-                table: "Nodes");
-
             migrationBuilder.DropTable(
                 name: "ApplicationVersionProject");
 
@@ -141,15 +145,10 @@ namespace Deployer.Data.Migrations
                 name: "Projects");
 
             migrationBuilder.DropTable(
+                name: "Nodes");
+
+            migrationBuilder.DropTable(
                 name: "Applications");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Nodes_ApplicationId",
-                table: "Nodes");
-
-            migrationBuilder.DropColumn(
-                name: "ApplicationId",
-                table: "Nodes");
         }
     }
 }

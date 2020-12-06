@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Deployer.Data.Migrations
 {
     [DbContext(typeof(DeployerContext))]
-    [Migration("20201206022503_RemoveRegisteredFromApplication")]
-    partial class RemoveRegisteredFromApplication
+    [Migration("20201206104640_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

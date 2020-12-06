@@ -18,8 +18,6 @@ namespace Deployer.Data
         {
             builder.Entity<Node>().HasQueryFilter(i => i.Registered && !i.Deleted);
 
-            builder.Entity<Project>().HasOne<Node>().WithMany(i => i.Projects);
-
             builder.Entity<Application>().HasQueryFilter(i => !i.Deleted);
 
             builder.Entity<ApplicationVersion>().HasKey(i => new {i.Version, i.ApplicationId});

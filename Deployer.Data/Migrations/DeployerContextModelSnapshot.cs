@@ -145,14 +145,9 @@ namespace Deployer.Data.Migrations
                     b.Property<string>("NodeId")
                         .HasColumnType("CHAR(36)");
 
-                    b.Property<string>("NodeId1")
-                        .HasColumnType("CHAR(36)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NodeId");
-
-                    b.HasIndex("NodeId1");
 
                     b.ToTable("Projects");
                 });
@@ -192,13 +187,9 @@ namespace Deployer.Data.Migrations
 
             modelBuilder.Entity("Deployer.Data.Models.Project", b =>
                 {
-                    b.HasOne("Deployer.Data.Models.Node", null)
+                    b.HasOne("Deployer.Data.Models.Node", "Node")
                         .WithMany("Projects")
                         .HasForeignKey("NodeId");
-
-                    b.HasOne("Deployer.Data.Models.Node", "Node")
-                        .WithMany()
-                        .HasForeignKey("NodeId1");
 
                     b.Navigation("Node");
                 });
