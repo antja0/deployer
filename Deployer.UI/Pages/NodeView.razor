@@ -1,0 +1,41 @@
+﻿@page "/nodes/{id}"
+
+@using Deployer.Data
+@using Deployer.Data.Models
+@using Microsoft.EntityFrameworkCore
+@inject DeployerContext Context
+
+<NavLink class="btn btn-primary" href="nodes"><span class="oi oi-arrow-thick-left" aria-hidden="true"></span> All nodes</NavLink>
+
+<hr class="my-3" />
+
+@if (node == null || notFound)
+{
+    @if (notFound)
+    {
+        <h1>404 - Not found</h1>
+    }
+    else
+    {
+        <LoadingSpinner />
+    }
+}
+else
+{
+    <h1>@node.Name</h1>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Node node;
+    private bool notFound;
+
+    protected override async Task OnInitializedAsync()
+    {
+        node = await Context.Nodes.FirstOrDefaultAsync(i => i.Id.Equals(Id));
+
+        notFound = node == null;
+    }
+}
