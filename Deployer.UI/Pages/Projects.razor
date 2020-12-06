@@ -12,7 +12,6 @@
     <button class="p-2 btn btn-primary" @onclick="Search"><span class="oi oi-magnifying-glass" aria-hidden="true"></span></button>
 </div>
 
-
 <table class="table">
     <thead>
     <tr>
@@ -32,7 +31,14 @@
         {
             <tr>
                 <td>@project.Name</td>
-                <td><a href="nodes/@project.Node.Id">@project.Node.Name</a></td>
+                @if (project.Node == null)
+                {
+                    <td><span class="oi oi-warning" aria-hidden="true"></span>Node not found</td>
+                }
+                else
+                {
+                    <td><a href="nodes/@project.Node.Id">@project.Node.Name</a></td>
+                }
             </tr>
         }
     }
