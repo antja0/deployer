@@ -9,7 +9,27 @@ namespace Deployer.Api.Tests.IntegrationTests
     [TestFixture]
     public class RateLimitTests : IntegrationTestBase
     {
-        [Test]
+        [Test, Order(1)]
+        public async Task PostToWebhook_WithoutHMAC_ReturnsUnauthorized()
+        {
+            // Arrange
+            var request = new WebhookPayload
+            {
+                Repository = new Repository
+                {
+                    Name = "test-app",
+                    FullName = "organization/test-app"
+                }
+            };
+
+            // Act
+            var response = await TestClient.PostAsJsonAsync("api/release/test-app", request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Test, Order(1)]
         public async Task PostToWebhook_Once_ReturnsOk()
         {
             // Arrange
@@ -31,7 +51,7 @@ namespace Deployer.Api.Tests.IntegrationTests
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        [Test]
+        [Test, Order(10)]
         public async Task PostToWebhook_RapidlyTooManyTimes_RateLimitingShouldOccur()
         {
             // Arrange
