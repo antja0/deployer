@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Deployer.Data.Models
 {
-    public class Project
+    public class DeploymentGroup
     {
         [Column(TypeName = "CHAR")]
         [StringLength(36)]
@@ -14,8 +14,13 @@ namespace Deployer.Data.Models
         [StringLength(512)]
         public string Name { get; set; }
 
-        public Node Node { get; set; }
-        public List<ApplicationVersion> ApplicationVersions { get; set; }
-        public List<DeploymentGroup> DeploymentGroups { get; set; }
+        public List<Node> Nodes { get; set; }
+
+        public List<Project> Projects { get; set; }
+
+        /// <summary>
+        /// Whether to add new nodes and projects to this list automatically when they are added.
+        /// </summary>
+        public bool UpdateAutomatically { get; set; }
     }
 }

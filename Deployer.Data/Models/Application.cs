@@ -51,5 +51,6 @@ namespace Deployer.Data.Models
 
         public List<ApplicationVersion> Versions { get; set; }
         public List<Node> Nodes { get; set; }
+        public List<DeploymentRule> DeploymentRules { get; set; }
     }
 }

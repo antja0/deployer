@@ -9,6 +9,8 @@ namespace Deployer.Data
         public DbSet<Application> Applications { get; set; }
         public DbSet<ApplicationVersion> ApplicationVersions { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<DeploymentGroup> DeploymentGroups { get; set; }
+        public DbSet<DeploymentRule> DeploymentRules { get; set; }
 
         public DeployerContext(DbContextOptions options) : base(options)
         {
@@ -21,6 +23,8 @@ namespace Deployer.Data
             builder.Entity<Application>().HasQueryFilter(i => !i.Deleted);
 
             builder.Entity<ApplicationVersion>().HasKey(i => new {i.Version, i.ApplicationId});
+
+            builder.Entity<DeploymentRule>().HasKey(i => new {i.Type, i.DeploymentGroupId, i.ApplicationId});
         }
     }
 }
