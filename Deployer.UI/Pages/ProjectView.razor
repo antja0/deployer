@@ -1,0 +1,78 @@
+﻿@page "/projects/{id}"
+
+@using Deployer.Data
+@using Deployer.Data.Models
+@using Microsoft.EntityFrameworkCore
+@inject DeployerContext Context
+
+<NavLink class="btn btn-primary" href="projects"><span class="oi oi-arrow-thick-left" aria-hidden="true"></span> All projects</NavLink>
+
+<hr class="my-3" />
+
+@if (project == null || notFound)
+{
+    @if (notFound)
+    {
+        <h1>404 - Not found</h1>
+    }
+    else
+    {
+        <LoadingSpinner />
+    }
+}
+else
+{
+    <h1>@project.Name</h1>
+
+    @if (project.Node == null)
+    {
+        <p><span class="oi oi-warning" aria-hidden="true"></span>Node not found</p>
+    }
+    else
+    {
+        <p>Node: <a href="nodes/@project.Node.Id">@project.Node.Name</a></p>
+    }
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Application</th>
+            <th>Version</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (project.ApplicationVersions != null)
+        {
+            @foreach (var appVersion in project.ApplicationVersions)
+            {
+                @if (appVersion.Application != null)
+                {
+                    <tr>
+                        <td><a href="applications/@appVersion.ApplicationId">@appVersion.Application.Name</a></td>
+                        <td>@appVersion.Version</td>
+                    </tr>
+                }
+            }
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Project project;
+    private bool notFound;
+
+    protected override async Task OnInitializedAsync()
+    {
+        project = await Context.Projects
+            .Include(i => i.Node)
+            .Include(i => i.ApplicationVersions).ThenInclude(i => i.Application)
+            .FirstOrDefaultAsync(i => i.Id.Equals(Id));
+
+        notFound = project == null;
+    }
+}
+

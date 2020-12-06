@@ -30,7 +30,7 @@
         @foreach (var project in projects)
         {
             <tr>
-                <td>@project.Name</td>
+                <td><a href="projects/@project.Id">@project.Name</a></td>
                 @if (project.Node == null)
                 {
                     <td><span class="oi oi-warning" aria-hidden="true"></span>Node not found</td>

@@ -23,6 +23,29 @@
 else
 {
     <h1>@node.Name</h1>
+
+    <p>@node.ApiEndpoint</p>
+
+    <p>@node.Description</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Project</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (node.Projects != null)
+            {
+                @foreach (var project in node.Projects)
+                {
+                    <tr>
+                        <td><a href="projects/@project.Id">@project.Name</a></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 }
 
 @code {
@@ -34,7 +57,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        node = await Context.Nodes.FirstOrDefaultAsync(i => i.Id.Equals(Id));
+        node = await Context.Nodes
+            .Include(i => i.Projects)
+            .FirstOrDefaultAsync(i => i.Id.Equals(Id));
 
         notFound = node == null;
     }
