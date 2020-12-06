@@ -1,0 +1,84 @@
+﻿@page "/applications"
+
+@using Deployer.Data
+@using Deployer.Data.Models
+@using Microsoft.EntityFrameworkCore
+@inject DeployerContext Context
+
+<h1>Applications</h1>
+
+<div class="d-flex flex-row">
+    <input class="p-2" type="text" placeholder="Filter..." @bind="Filter">
+    <button class="p-2 btn btn-primary" @onclick="Search"><span class="oi oi-magnifying-glass" aria-hidden="true"></span></button>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Latest version</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    @if (applications == null)
+    {
+        <LoadingSpinner />
+    }
+    else
+    {
+        @foreach (var app in applications)
+        {
+            <tr>
+                <td><a href="applications/@app.Id">@app.Name</a></td>
+                @if (app.Versions == null)
+                {
+                    <td><span class="oi oi-warning" aria-hidden="true"></span>Version not found</td>
+                }
+                else
+                {
+                    <td>@GetLatestVersion(app)</td>
+                }
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+
+
+@code {
+    public string Filter { get; set; }
+
+    private List<Application> applications;
+
+    protected override async Task OnInitializedAsync()
+    {
+        applications = await Context.Applications
+        .Include(i => i.Versions)
+        .OrderBy(i => i.Name)
+        .ToListAsync();
+    }
+
+    private async Task Search(MouseEventArgs e)
+    {
+        applications = null;
+        applications = await Context.Applications
+        .Include(i => i.Versions)
+        .Where(i => i.Name.Contains(Filter))
+        .OrderBy(i => i.Name)
+        .ToListAsync();
+    }
+
+    private string GetLatestVersion(Application app)
+    {
+        var versions = app.Versions
+            .Where(i => !i.UnListed)
+            .Select(i => Version.TryParse(i.Version.StartsWith('v') ? i.Version.Substring(1) : i.Version, out var v) ? v : new Version(0, 0, 0))
+            .ToList();
+
+        versions.Sort();
+        versions.Reverse();
+
+        return versions.FirstOrDefault()?.ToString();
+    }
+}

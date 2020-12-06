@@ -1,0 +1,72 @@
+﻿@page "/applications/{id}"
+
+@using Deployer.Data
+@using Deployer.Data.Models
+@using Microsoft.EntityFrameworkCore
+@inject DeployerContext Context
+
+<NavLink class="btn btn-primary" href="applications"><span class="oi oi-arrow-thick-left" aria-hidden="true"></span> All applications</NavLink>
+
+<hr class="my-3" />
+
+@if (application == null || notFound)
+{
+    @if (notFound)
+    {
+        <h1>404 - Not found</h1>
+    }
+    else
+    {
+        <LoadingSpinner />
+    }
+}
+else
+{
+    <h1>@application.Name</h1>
+
+    <p>@application.Description</p>
+
+    <p>@application.RepositoryUrl</p>
+
+    <p>@application.VersionEndpoint</p>
+
+    <p>@application.ScriptPath</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Version</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (application.Versions != null)
+            {
+                @foreach (var version in application.Versions)
+                {
+                    <tr>
+                        <td>@version.Version</td>
+                        <td>@(version.Date?.ToString() ?? "unknown")</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Application application;
+    private bool notFound;
+
+    protected override async Task OnInitializedAsync()
+    {
+        application = await Context.Applications
+            .Include(i => i.Versions)
+            .FirstOrDefaultAsync(i => i.Id.Equals(Id));
+
+        notFound = application == null;
+    }
+}
