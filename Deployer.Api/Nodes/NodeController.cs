@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Deployer.Data;
 using Deployer.Data.Models;
@@ -27,6 +28,11 @@ namespace Deployer.Api.Nodes
         [HttpPost("/api/Nodes")]
         public async Task<IActionResult> Add([FromBody] Node node)
         {
+            if (_context.Nodes.Any(i => i.Name.Equals(node.Name)))
+            {
+                return BadRequest("No duplicates allowed");
+            }
+
             _logger.LogInformation($"Adding new (unregistered) node '{node.Name}'...");
 
             node.Id = Guid.NewGuid().ToString();
