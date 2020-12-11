@@ -73,7 +73,7 @@
     private string GetLatestVersion(Application app)
     {
         var versions = app.Versions
-            .Where(i => !i.UnListed)
+            .Where(i => !i.UnListed && !string.IsNullOrEmpty(i.Name))
             .Select(i => Version.TryParse(i.Name.StartsWith('v') ? i.Name.Substring(1) : i.Name, out var v) ? v : new Version(0, 0, 0))
             .ToList();
 
