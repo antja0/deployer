@@ -37,11 +37,18 @@ namespace Deployer.Data.Models
         public string ChangelogPath { get; set; }
 
         /// <summary>
-        /// Path from repository root to script that will run pre-deploy.
+        /// Script name in the deployer server at the scripts folder.
         /// </summary>
         [Column(TypeName = "NVARCHAR")]
         [StringLength(128)]
-        public string ScriptPath { get; set; }
+        public string Script { get; set; }
+
+        /// <summary>
+        /// Output folder when built with script. eg. "dist" or "bin/Release"
+        /// </summary>
+        [Column(TypeName = "NVARCHAR")]
+        [StringLength(128)]
+        public string OutputFolder { get; set; }
 
         [Column(TypeName = "NVARCHAR")]
         [StringLength(1024)]

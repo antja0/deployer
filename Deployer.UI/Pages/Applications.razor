@@ -74,7 +74,7 @@
     {
         var versions = app.Versions
             .Where(i => !i.UnListed)
-            .Select(i => Version.TryParse(i.Version.StartsWith('v') ? i.Version.Substring(1) : i.Version, out var v) ? v : new Version(0, 0, 0))
+            .Select(i => Version.TryParse(i.Name.StartsWith('v') ? i.Name.Substring(1) : i.Name, out var v) ? v : new Version(0, 0, 0))
             .ToList();
 
         versions.Sort();

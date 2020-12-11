@@ -18,6 +18,8 @@ namespace Deployer.Data.Models
         [StringLength(1024)]
         public string Description { get; set; }
 
+        public bool ListNewVersions { get; set; }
+
         public List<Version> Versions { get; set; }
 
         public List<DeploymentRule> DeploymentRules { get; set; }

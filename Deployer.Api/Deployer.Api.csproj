@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Deployer.Data\Deployer.Data.csproj" />
+    <ProjectReference Include="..\Deployer\Deployer.csproj" />
   </ItemGroup>
 
 

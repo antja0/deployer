@@ -16,11 +16,13 @@ namespace Deployer.Api.Webhook
     {
         private readonly ILogger<WebhookController> _logger;
         private readonly DeployerContext _context;
+        private readonly IDeployerService _deployer;
 
-        public WebhookController(ILogger<WebhookController> logger, DeployerContext context)
+        public WebhookController(ILogger<WebhookController> logger, DeployerContext context, IDeployerService deployer)
         {
             _logger = logger;
             _context = context;
+            _deployer = deployer;
         }
 
         /// <summary>
@@ -33,15 +35,22 @@ namespace Deployer.Api.Webhook
         [HttpPost("/api/{eventId}")]
         public async Task<IActionResult> ReleaseWebhook(string eventId, [FromBody] WebhookPayload payload)
         {
-            if (string.IsNullOrWhiteSpace(eventId)) return BadRequest("Invalid applicationId or eventId.");
+            if (string.IsNullOrWhiteSpace(eventId)) return BadRequest("Invalid eventId");
             if (payload.Repository == null) return BadRequest($"Malicious payload - '{nameof(WebhookPayload.Repository)}' not included");
+            if (string.IsNullOrWhiteSpace(payload.Repository.Name)) return BadRequest("Invalid repository name");
 
-            if (!_context.Events.Any(i => i.EventId.Equals(eventId)))
+            var deployEvent = await _context.Events.FirstOrDefaultAsync(i => i.EventId.Equals(eventId));
+            if (deployEvent == null)
             {
                 return NotFound($"Event '{eventId}' not found");
             }
 
-            var applicationId = payload.Repository.FullName;
+            var applicationId = payload.Repository.Name;
+            // Remove all illegal chars before adding, applicationId is used in build folder paths etc.
+            foreach (var c in System.IO.Path.GetInvalidFileNameChars())
+            {
+                applicationId.Remove(c);
+            }
 
             _logger.LogDebug($"Webhook received event '{eventId}' from '{applicationId}'...");
 
@@ -50,17 +59,18 @@ namespace Deployer.Api.Webhook
             {
                 _logger.LogInformation($"Adding new application '{applicationId}'...");
 
-                // TODO Try get latest version here.
-
                 application = new Application
                 {
                     Id = applicationId,
-                    Name = payload.Repository.Name,
-                    Versions = new List<Version>(),
+                    Name = payload.Repository.Name.Replace("-", " "),
                     Deleted = false,
+                    Versions = new List<Version>(),
+                    DeploymentRules = new List<DeploymentRule>()
                 };
 
                 await _context.Applications.AddAsync(application);
+                await _context.SaveChangesAsync();
+                return Ok(application);
             }
             
             if (application.Deleted)
@@ -68,6 +78,11 @@ namespace Deployer.Api.Webhook
                 _logger.LogWarning($"Tried to release already deleted application '{applicationId}'");
                 return BadRequest();
             }
+
+            // Build and zip the new version.
+            var version = _deployer.BuildNewVersion(application);
+            version.UnListed = !deployEvent.ListNewVersions;
+            await _context.Versions.AddAsync(version);
 
             // Create new release logic
 

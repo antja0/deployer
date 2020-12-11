@@ -43,6 +43,9 @@ namespace Deployer.Api
                 .AddScheme<HMACSignatureHandler>("Webhook");
 
             services.AddDbContext<DeployerContext>(Configuration.GetConnectionString("Deployer"));
+
+            services.Configure<DeployerOptions>(Configuration.GetSection("Deployer"));
+            services.AddSingleton<IDeployerService, DeployerService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -78,9 +81,9 @@ namespace Deployer.Api
             if (!context.Events.Any())
             {
                 // Add default events:
-                context.Events.Add(new Event { EventId = "push", Id = Guid.NewGuid().ToString() });
-                context.Events.Add(new Event { EventId = "pull-request", Id = Guid.NewGuid().ToString() });
-                context.Events.Add(new Event { EventId = "release", Id = Guid.NewGuid().ToString() });
+                context.Events.Add(new Event { EventId = "push", Id = Guid.NewGuid().ToString(), ListNewVersions = false });
+                context.Events.Add(new Event { EventId = "pull-request", Id = Guid.NewGuid().ToString(), ListNewVersions = false });
+                context.Events.Add(new Event { EventId = "release", Id = Guid.NewGuid().ToString(), ListNewVersions = true });
 
                 context.SaveChanges();
             }

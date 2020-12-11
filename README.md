@@ -14,6 +14,18 @@ Whole Deployer project consists of Deployer (this repository) and nodes.
 Webhook requests register new applications (if not yet present) and versions to the deployer.
 - Can be configured to accept only repositories of certain organization
 
+### Webhook
+
+When deployer receives webhook request for the first time new application is created.
+After that new folder is created at the deployer server: `deployer/{applicationid}/{versionId}`
+Build script is run at the folder. Something like this:
+```sh
+git clone 
+dotnet build
+```
+Make sure all dependencies etc. required in building the application are installed on deployer server.
+Then output in specified output folder is zipped and stored at the deployer server.
+
 ## Nodes
 
 - Are setup on servers which contain multiple projects - which in turn contain multiple applications. Each server has one node that receives built files from Deployer.
