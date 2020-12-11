@@ -5,7 +5,9 @@ namespace Deployer.Data.Models
 {
     public class DeploymentRule
     {
-        public DeploymentType Type { get; set; } = DeploymentType.PullRequest;
+        [Column(TypeName = "CHAR")]
+        [StringLength(36)]
+        public string EventId { get; set; }
 
         [Column(TypeName = "CHAR")]
         [StringLength(36)]
@@ -14,6 +16,8 @@ namespace Deployer.Data.Models
         [Column(TypeName = "CHAR")]
         [StringLength(36)]
         public string ApplicationId { get; set; }
+
+        public Event Event { get; set; }
 
         public DeploymentGroup DeploymentGroup { get; set; }
 

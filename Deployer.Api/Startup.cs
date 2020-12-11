@@ -1,6 +1,9 @@
+using System;
+using System.Linq;
 using Antja.Authentication.HMAC;
 using AspNetCoreRateLimit;
 using Deployer.Data;
+using Deployer.Data.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -71,6 +74,16 @@ namespace Deployer.Api
             using var context = serviceScope.ServiceProvider.GetService<DeployerContext>();
             context.Database.EnsureCreated();
             context.Database.Migrate();
+
+            if (!context.Events.Any())
+            {
+                // Add default events:
+                context.Events.Add(new Event { EventId = "push", Id = Guid.NewGuid().ToString() });
+                context.Events.Add(new Event { EventId = "pull-request", Id = Guid.NewGuid().ToString() });
+                context.Events.Add(new Event { EventId = "release", Id = Guid.NewGuid().ToString() });
+
+                context.SaveChanges();
+            }
         }
     }
 }

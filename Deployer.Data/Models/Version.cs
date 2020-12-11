@@ -18,14 +18,19 @@ namespace Deployer.Data.Models
         [StringLength(16)]
         public string Name { get; set; }
 
-        [Column(TypeName = "CHAR")]
-        [StringLength(36)]
-        public string ApplicationId { get; set; }
-
         public DateTime? Date { get; set; }
 
         public bool UnListed { get; set; }
 
+        [Column(TypeName = "CHAR")]
+        [StringLength(36)]
+        public string EventId { get; set; }
+
+        [Column(TypeName = "CHAR")]
+        [StringLength(36)]
+        public string ApplicationId { get; set; }
+
+        public Event Event { get; set; }
         public Application Application { get; set; }
         public List<Project> Projects { get; set; }
     }

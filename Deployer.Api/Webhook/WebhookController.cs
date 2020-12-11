@@ -36,15 +36,14 @@ namespace Deployer.Api.Webhook
             if (string.IsNullOrWhiteSpace(eventId)) return BadRequest("Invalid applicationId or eventId.");
             if (payload.Repository == null) return BadRequest($"Malicious payload - '{nameof(WebhookPayload.Repository)}' not included");
 
-            var eventType = GetDeploymentType(eventId);
-            if (eventType == DeploymentType.Undefined)
+            if (!_context.Events.Any(i => i.EventId.Equals(eventId)))
             {
-                return BadRequest($"Event type '{eventId}' not defined");
+                return NotFound($"Event '{eventId}' not found");
             }
 
             var applicationId = payload.Repository.FullName;
 
-            _logger.LogDebug($"Webhook received event '{eventType}' from '{applicationId}'...");
+            _logger.LogDebug($"Webhook received event '{eventId}' from '{applicationId}'...");
 
             var application = await _context.Applications.Include(i => i.DeploymentRules).FirstOrDefaultAsync(i => i.Id.Equals(applicationId));
             if (application == null)
@@ -72,7 +71,7 @@ namespace Deployer.Api.Webhook
 
             // Create new release logic
 
-            var deploymentRule = application.DeploymentRules?.FirstOrDefault(i => i.DeployAutomatically && i.Type == eventType);
+            var deploymentRule = application.DeploymentRules?.FirstOrDefault(i => i.DeployAutomatically && i.Event.EventId == eventId);
             if (deploymentRule != null)
             {
                 _logger.LogInformation($"Starting to deploy application '{applicationId}'...");
@@ -82,22 +81,6 @@ namespace Deployer.Api.Webhook
             await _context.SaveChangesAsync();
 
             return Ok(application);
-        }
-
-        private static DeploymentType GetDeploymentType(string eventId)
-        {
-            switch (eventId)
-            {
-                case "push":
-                    return DeploymentType.Push;
-                case "pullrequest":
-                case "pull-request":
-                    return DeploymentType.PullRequest;
-                case "release":
-                    return DeploymentType.Release;
-                default:
-                    return DeploymentType.Undefined;
-            }
         }
     }
 }
