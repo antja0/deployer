@@ -4,14 +4,16 @@ using Deployer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Deployer.Data.Migrations
 {
     [DbContext(typeof(DeployerContext))]
-    partial class DeployerContextModelSnapshot : ModelSnapshot
+    [Migration("20201211155124_AddDeployerService")]
+    partial class AddDeployerService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
