@@ -15,7 +15,7 @@ namespace Deployer.Data.Models
         public string Name { get; set; }
 
         public Node Node { get; set; }
-        public List<ApplicationVersion> ApplicationVersions { get; set; }
+        public List<Version> Versions { get; set; }
         public List<DeploymentGroup> DeploymentGroups { get; set; }
     }
 }

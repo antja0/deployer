@@ -41,9 +41,9 @@ else
         </tr>
         </thead>
         <tbody>
-        @if (project.ApplicationVersions != null)
+        @if (project.Versions != null)
         {
-            @foreach (var appVersion in project.ApplicationVersions)
+            @foreach (var appVersion in project.Versions)
             {
                 @if (appVersion.Application != null)
                 {
@@ -69,7 +69,7 @@ else
     {
         project = await Context.Projects
             .Include(i => i.Node)
-            .Include(i => i.ApplicationVersions).ThenInclude(i => i.Application)
+            .Include(i => i.Versions).ThenInclude(i => i.Application)
             .FirstOrDefaultAsync(i => i.Id.Equals(Id));
 
         notFound = project == null;

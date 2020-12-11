@@ -57,7 +57,7 @@ namespace Deployer.Api.Webhook
                 {
                     Id = applicationId,
                     Name = payload.Repository.Name,
-                    Versions = new List<ApplicationVersion>(),
+                    Versions = new List<Version>(),
                     Deleted = false,
                 };
 
