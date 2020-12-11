@@ -49,7 +49,7 @@ namespace Deployer.Api.Webhook
             // Remove all illegal chars before adding, applicationId is used in build folder paths etc.
             foreach (var c in System.IO.Path.GetInvalidFileNameChars())
             {
-                applicationId.Remove(c);
+                applicationId = applicationId.Replace(c.ToString(), "");
             }
 
             _logger.LogDebug($"Webhook received event '{eventId}' from '{applicationId}'...");
@@ -70,7 +70,7 @@ namespace Deployer.Api.Webhook
 
                 await _context.Applications.AddAsync(application);
                 await _context.SaveChangesAsync();
-                return Ok(application);
+                return Ok("Application created");
             }
             
             if (application.Deleted)
@@ -80,7 +80,7 @@ namespace Deployer.Api.Webhook
             }
 
             // Build and zip the new version.
-            var version = _deployer.BuildNewVersion(application);
+            var version = await _deployer.BuildNewVersionAsync(application);
             version.UnListed = !deployEvent.ListNewVersions;
             await _context.Versions.AddAsync(version);
 
@@ -95,7 +95,7 @@ namespace Deployer.Api.Webhook
 
             await _context.SaveChangesAsync();
 
-            return Ok(application);
+            return Ok($"{eventId} event successful");
         }
     }
 }

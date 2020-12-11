@@ -45,7 +45,7 @@ else
                 @foreach (var version in application.Versions)
                 {
                     <tr>
-                        <td>@version.Version</td>
+                        <td>@version.Name</td>
                         <td>@(version.Date?.ToString() ?? "unknown")</td>
                     </tr>
                 }

@@ -1,9 +1,10 @@
-﻿using Deployer.Data.Models;
+﻿using System.Threading.Tasks;
+using Deployer.Data.Models;
 
 namespace Deployer
 {
     public interface IDeployerService
     {
-        Version BuildNewVersion(Application application);
+        Task<Version> BuildNewVersionAsync(Application application);
     }
 }
