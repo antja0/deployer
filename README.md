@@ -17,7 +17,10 @@ Webhook requests register new applications (if not yet present) and versions to 
 ### Webhook
 
 When deployer receives webhook request for the first time new application is created.
-After that new folder is created at the deployer server: `deployer/{applicationid}/{versionId}`
+
+After this build script must be configured manually (for extra security) in the deployer.
+
+On second time and onwards a new folder is created at the deployer server: `deployer/{applicationid}/{buildId}`
 Build script is run at the folder. Something like this:
 ```sh
 git clone 
