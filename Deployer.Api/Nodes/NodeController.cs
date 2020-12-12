@@ -24,6 +24,7 @@ namespace Deployer.Api.Nodes
         /// <summary>
         /// Adds new node to deployer.
         /// </summary>
+        [ServiceFilter(typeof(ClientIpCheckActionFilter))]
         [Authorize(AuthenticationSchemes = "Nodes")]
         [HttpPost("/api/Nodes")]
         public async Task<IActionResult> Add([FromBody] Node node)
@@ -50,6 +51,7 @@ namespace Deployer.Api.Nodes
         /// <summary>
         /// Endpoint for node to download version package for deployment.
         /// </summary>
+        [ServiceFilter(typeof(ClientIpCheckActionFilter))]
         [Authorize(AuthenticationSchemes = "Nodes")]
         [HttpGet(Routes.VersionDownload)]
         public async Task<IActionResult> Download(string guid)

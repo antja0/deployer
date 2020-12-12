@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Deployer.Api
 {                                                                                                                                         
@@ -43,6 +44,13 @@ namespace Deployer.Api
                 .AddScheme<HMACSignatureHandler>("Webhook");
 
             services.AddDbContext<DeployerContext>(Configuration.GetConnectionString("Deployer"));
+
+            services.AddScoped(c =>
+            {
+                var loggerFactory = c.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<ClientIpCheckActionFilter>();
+                return new ClientIpCheckActionFilter(Configuration.GetValue("IpWhiteList", "*"), logger);
+            });
 
             services.Configure<DeployerOptions>(Configuration.GetSection("Deployer"));
             services.AddHttpClient();

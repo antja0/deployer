@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Deployer.Node
 {
@@ -19,6 +20,13 @@ namespace Deployer.Node
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddScoped(c =>
+            {
+                var loggerFactory = c.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<ClientIpCheckActionFilter>();
+                return new ClientIpCheckActionFilter(Configuration.GetValue("IpWhiteList", "*"), logger);
+            });
 
             services.AddHttpClient();
             services.Configure<NodeOptions>(Configuration.GetSection("Node"));
