@@ -14,11 +14,16 @@ Whole Deployer project consists of Deployer (this repository) and nodes.
 Webhook requests register new applications (if not yet present) and versions to the deployer.
 - Can be configured to accept only repositories of certain organization
 
-### Webhook
+### API / Webhook
+
+Webhook listens to POST deployer/api/{eventId}
+
+Different events can be configured, default are "push", "pull-request" and "release".
+So for example if you want to deploy to dev servers on one event and to production with another.
 
 When deployer receives webhook request for the first time new application is created.
 
-After this build script must be configured manually (for extra security) in the deployer.
+After this build script must be configured at the deployer server manually (for extra security).
 
 On second time and onwards a new folder is created at the deployer server: `deployer/{applicationid}/{buildId}`
 Build script is run at the folder. Something like this:
@@ -27,23 +32,34 @@ git clone
 dotnet build
 ```
 Make sure all dependencies etc. required in building the application are installed on deployer server.
-Then output in specified output folder is zipped and stored at the deployer server.
+Then output in specified output folder is zipped and stored at the deployer server for future deployments.
+
+### UI
+
+Deployer.UI can basically be thought of as an admin panel that triggers deployments.
+It can also be used to organize projects into deployment groups etc.
+There is also an option to configure deployments (or some of them) to be automatic.
+It cannot be used to modify build scripts, it can only eg. edit which build script is used for which application.
 
 ## Nodes
 
-- Are setup on servers which contain multiple projects - which in turn contain multiple applications. Each server has one node that receives built files from Deployer.
-- Upon initial setup the node registers itself to the deployer.
-- When deployment is triggered new releases are uploaded to the registered nodes. Nodes will move downloaded files into their respective project and application folders under configured project root folder.
-If not yet present, those folders will be created.
+Default setup is that each node contains multiple projects - which in turn contain multiple applications. Each server has one node that receives built files from Deployer.
+
+The Node included is designed for IIS deployments, but (if you want to code your own) essentially Node does these things:
+- Upon initial setup the node registers/adds itself to the deployer. (POST deployer/api/nodes)
+- Listens to (POST node/api/deploy) to trigger deployment
+- When deployment is triggered Node downloads the specified version from deployer (GET deployer/api/Versions)
 
 ## Security
 
 All communication between Deployer components is secured with HTTPS and [HMAC](https://en.wikipedia.org/wiki/HMAC).
 
+Deployer and nodes can also be IP restricted on software level. TODO: instructions on how to.
+
 Preferrably Deployer networking should be setup so that:
 - Deployer.API receives requests from anywhere (eg. Github or node registrations).
-- Deployer.Node:s allowing connections only from Deployer.UI.
-- Deployer.UI in intranet, allowing no outside connections.
+- Nodes allowing connections only from deplyer.
+- Deployer.UI in intranet, allowing no outside connections (basically for triggering deployments).
 
 **I do not take any responsibility, please do your own research before using.**
 
