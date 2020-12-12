@@ -45,6 +45,7 @@ namespace Deployer.Api
             services.AddDbContext<DeployerContext>(Configuration.GetConnectionString("Deployer"));
 
             services.Configure<DeployerOptions>(Configuration.GetSection("Deployer"));
+            services.AddHttpClient();
             services.AddSingleton<IDeployerService, DeployerService>();
         }
 

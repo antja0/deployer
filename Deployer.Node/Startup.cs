@@ -19,6 +19,9 @@ namespace Deployer.Node
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddHttpClient();
+            services.Configure<NodeOptions>(Configuration.GetSection("Node"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

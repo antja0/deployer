@@ -5,6 +5,7 @@ namespace Deployer
 {
     public interface IDeployerService
     {
+        Task DeployAsync(Version version, DeploymentGroup deploymentGroup);
         Task<Version> BuildNewVersionAsync(Application application);
     }
 }

@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.Data", "Deployer.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer.Node", "Deployer.Node\Deployer.Node.csproj", "{D2B274A4-DC79-416F-891D-8CFDB55EE97F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deployer", "Deployer\Deployer.csproj", "{A15227A0-FCAF-4569-825C-B6CC1A93A45D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deployer", "Deployer\Deployer.csproj", "{A15227A0-FCAF-4569-825C-B6CC1A93A45D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

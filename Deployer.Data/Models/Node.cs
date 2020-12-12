@@ -27,6 +27,5 @@ namespace Deployer.Data.Models
         public bool Deleted { get; set; }
 
         public List<Project> Projects { get; set; }
-        public List<DeploymentGroup> DeploymentGroups { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Deployer.Api.Tests.IntegrationTests
+namespace Deployer
 {
     public static class HttpExtensions
     {

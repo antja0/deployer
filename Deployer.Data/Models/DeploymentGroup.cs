@@ -19,8 +19,6 @@ namespace Deployer.Data.Models
         /// </summary>
         public bool UpdateAutomatically { get; set; }
 
-        public List<Node> Nodes { get; set; }
-
         public List<Project> Projects { get; set; }
         public List<DeploymentRule> DeploymentRules { get; set; }
     }
