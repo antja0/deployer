@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Deployer.Api
-{
+{                                                                                                                                         
     public class Startup
     {
         public Startup(IConfiguration configuration)

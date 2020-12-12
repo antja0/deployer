@@ -38,7 +38,7 @@ namespace Deployer.Node.Controllers
 
             var fileInfo = new FileInfo($"{deployRequest.VersionGuid}.zip");
 
-            var response = await _httpClient.GetAsync($"{_options.DeployerUrl}/api/Versions?{deployRequest.VersionGuid}");
+            var response = await _httpClient.GetAsync($"{_options.DeployerUrl}{Routes.VersionDownload.Replace("{guid}", deployRequest.VersionGuid)}");
             response.EnsureSuccessStatusCode();
             await using var stream = await response.Content.ReadAsStreamAsync();
             await using var fileStream = System.IO.File.Create(fileInfo.FullName);

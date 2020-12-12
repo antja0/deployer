@@ -46,5 +46,22 @@ namespace Deployer.Api.Nodes
 
             return Ok(node);
         }
+
+        /// <summary>
+        /// Endpoint for node to download version package for deployment.
+        /// </summary>
+        [Authorize(AuthenticationSchemes = "Nodes")]
+        [HttpGet(Routes.VersionDownload)]
+        public async Task<IActionResult> Download(string guid)
+        {
+            if (string.IsNullOrWhiteSpace(guid))
+            {
+                return BadRequest();
+            }
+
+            // TODO Encrypt zip when sending, for added security?
+
+            return Ok();
+        }
     }
 }
